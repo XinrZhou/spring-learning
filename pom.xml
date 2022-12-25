@@ -5,12 +5,20 @@
   <groupId>org.example</groupId>
   <artifactId>spring-learning</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <modules>
+    <module>spring-01-core-concept</module>
+    <module>spring-02-datasource-case</module>
+    <module>spring-03-annotation-bean</module>
+  </modules>
+  <packaging>pom</packaging>
 
 
   <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
 
   <dependencies>
     <dependency>

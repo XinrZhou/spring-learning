@@ -1,5 +1,5 @@
 ## Spring
-![spring](https://pic3.zhimg.com/v2-fef1bbc24d789492e9d5bdcc5447b782_r.jpg)
+![spring](https://www.waytoeasylearn.com/wp-content/uploads/2020/01/4-2-768x400.png)
 ### 核心概念
 #### IoC (Inversion of control)：控制反转
 1. 使用对象时在程序中不使用new产生对象（耦合度高），转换为由外部提供对象
@@ -8,7 +8,6 @@
 #### DI (Dependency Injection)：依赖注入
 1. 在容器中建立bean之间的依赖关系：在IoC容器中，service依赖于dao
 2. 最终，对想从IoC容器中获取，且获取到的bean已经绑定了所有的依赖关系
-***
 ### IoC案例分析
 1. 管什么？（Service和Dao）
 2. 如何将被管理的对象告知IoC容器？（配置）
@@ -29,7 +28,6 @@ ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.
 ```
 BookDao bookDao = (BookDao) ctx.getBean("bookDao");
 ```
-***
 ### DI案例分析
 1. 删除业务层中使用new方式创建的dao对象
 2. 提供依赖对象对应的setter方法
@@ -77,5 +75,107 @@ ctx.close();
 ``` 
 ctx.registerShutdownHook();
 ```
-***
+### 依赖注入
+#### 依赖注入方式
+1. setter注入
+* 引用类型:：在bean中定义引用类型属性并提供对应的setter，配置中使用property标签ref属性注入引用类型的对象
+``` 
+private BookDao bookDao;
 
+public void setBookDao(BookDao bookDao) {
+    this.bookDao = bookDao;
+}
+```
+``` 
+<bean id="bookService" class="org.example.service.impl.BookServiceImpl">
+        <property name="bookDao" ref="bookDao" />
+</bean> 
+```
+* 简单类型：配置中使用property标签value属性注入简单类型数据 
+2. 构造器注入：和setter注入类似，在bean中定义引用类型属性并提供可访问的构造方法，将<property>标签改为<constructor-arg>
+3. 推荐使用setter注入，更灵活
+#### 依赖自动装配：
+* IoC容器根据bean所依赖的资源在容器中自动查找并注入到bean中的过程
+* 配置中使用bean标签autowire属性设置自动装配的类型
+* 适用于引用类型依赖注入，不能对简单类型进行操作
+### 数据源配置
+#### 加载properties文件
+1. 开启context命名空间
+2. 使用context空间加载properties文件
+* 加载指定配置文件
+``` 
+<context:property-placeholder location="jdbc.properties" /> 
+```
+* 加载类路径或jar包中的全部配置文件
+``` 
+<context:property-placeholder location="classpath*:*.properties" /> 
+```
+3. 使用属性占位符${}读取properties文件中的属性
+### 容器
+#### 容器初始化
+1. 类路径加载配置文件
+2. 文件路径加载配置文件
+``` 
+ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+ApplicationContext ctx = new FileSystemXmlApplicationContext("D:\\workspace-2022\\spring-learning\\applicationContext.xml");
+```
+3. 注意
+* BeanFactory是IoC容器的顶层接口，初始化对象时bean延迟加载。
+* ApplicationContext是Spring容器的核心接口，初始化bean时立即加载。
+#### 获取bean
+1. 使用bean名称获取
+2. 使用bean名称获取并指定类型
+3. 使用bean类型获取
+``` 
+BookService bookService = (BookService) ctx.getBean("bookService");
+BookService bookService = ctx.getBean("bookService", BookService.class);
+BookService bookService = ctx.getBean("bookService", BookService.class);
+```
+***
+### 注解开发
+#### 定义bean
+1. 使用@Component定义bean
+2. 核心配置文件中通过扫描组件加载bean
+3. Spring提供@Component注解的三个衍生注解
+* @Controller：表现层bean定义
+* @Service：业务层bean定义
+* @Repository：数据层bean定义
+4. Spring3.0开启了纯注解开发模式，用Java类代替Spring核心配置文件
+``` 
+@Configuration //用于设定当前类为配置类
+@ComponentScan("org.example")  //设定扫描路径
+public class SpringConfig {
+} 
+```
+``` 
+ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringConfig.class);
+```
+5. @Scope定义bean作用范围（singleton/prototype），@PostConstruct、@PreDestroy定义bean生命周期
+#### 依赖注入
+1. 使用@Autowired注解开启自动装配模式（按类型）
+2. 使用@Qualifier注解开启指定名称装配bean
+3. 自动装配基于反射设计创建对象，且为暴力反射，无需提供setter方法 
+4. 自动装配建议使用无参构造方法创建对象
+5. 使用@Value实现简单类型注入
+6. 使用@PropertySource注解加载properties文件，路径不允许使用通配符
+#### 第三方bean管理
+1. 使用@Bean配置第三方Bean，用独立的类进行管理
+``` 
+public class JdbcConfig {
+    @Bean("dataSource")
+    public DataSource dataSource() {
+        DruidDataSource ds = new DruidDataSource();
+        ds.setDriverClassName("com.mysql.jdbc.Driver");
+        ds.setUrl("jdbc:mysql://localhost:3306/spring_db");
+        ds.setUsername("root");
+        ds.setPassword("123456");
+        return ds;
+    }
+}
+```
+2. 将独立的配置类加入核心配置
+* 方式一：（导入式）使用@Import注解手动加入配置类到核心配置
+* 方式二：（扫描式），使用@ComponentScan注解配置类所在的包
+3. 第三方bean依赖注入
+* 简单类型注入：定义成员变量
+* 引用类型注入：为bean定义方法设置形参，容器会根据类型自动装配对象

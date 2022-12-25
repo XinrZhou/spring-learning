@@ -4,7 +4,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-    <bean id="bookDao" class="org.example.dao.impl.BookDaoImpl" init-method="init" destroy-method="destroy"/>
+    <bean id="bookDao" class="org.example.dao.impl.BookDaoImpl" init-method="init" destroy-method="destroy">
+        <property name="databseName" value="mysql" />
+        <property name="connectNum" value="10" />
+    </bean>
 
     <bean id="bookService" class="org.example.service.impl.BookServiceImpl">
         <property name="bookDao" ref="bookDao" />
