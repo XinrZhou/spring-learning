@@ -9,6 +9,8 @@
     <module>spring-01-core-concept</module>
     <module>spring-02-datasource-case</module>
     <module>spring-03-annotation-bean</module>
+    <module>spring-04-AOP-demo</module>
+    <module>spring-05-AOP-case</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -24,14 +26,26 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>4.3.7.RELEASE</version>
+      <version>5.3.23</version>
     </dependency>
 
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
+      <version>1.2.6</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis</artifactId>
+      <version>3.5.7</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis-spring</artifactId>
+      <version>2.0.6</version>
+    </dependency>
+
   </dependencies>
 </project>

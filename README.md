@@ -131,7 +131,6 @@ BookService bookService = (BookService) ctx.getBean("bookService");
 BookService bookService = ctx.getBean("bookService", BookService.class);
 BookService bookService = ctx.getBean("bookService", BookService.class);
 ```
-***
 ### 注解开发
 #### 定义bean
 1. 使用@Component定义bean
@@ -179,3 +178,125 @@ public class JdbcConfig {
 3. 第三方bean依赖注入
 * 简单类型注入：定义成员变量
 * 引用类型注入：为bean定义方法设置形参，容器会根据类型自动装配对象
+*** 
+### AOP
+#### 简介
+1. AOP：面向切面编程，在不惊动原始设计的基础上为其进行功能增强
+2. Spring理念：无入侵式编程
+3. 核心概念
+* 连接点（JoinPoint）：程序执行过程中的任意位置，在SpringAOP中理解为方法的执行
+* 切入点（Pointcut）：匹配连接点的式子，在SpringAOP中，一个切入点只描述一个具体方法，也可以匹配多个方法。切入点一定是连接点。
+* 通知（Advice）：在切入点处执行的操作（共性功能），在SpringAOP中，功能最终以方法的形式呈现
+* 通知类：定义通知的类
+* 切面（Aspect）：描述通知和切入点的关系
+![SpringAOP](https://ts1.cn.mm.bing.net/th/id/R-C.0b7600322849a382903c34805bdc24eb?rik=9p3AKmTIhNLXTw&riu=http%3a%2f%2fwww.baeldung.com%2fwp-content%2fuploads%2f2017%2f11%2fProgram_Execution.jpg&ehk=vgtDB0jM0hdHH3y8YklKRHp1C2adT4E0Zkipm8y%2fbfQ%3d&risl=&pid=ImgRaw&r=0)
+#### 思路
+1. 导坐标
+2. 定义dao接口与实现类
+3. 制作共性功能（通知类和通知）
+4. 定义切入点：切入点依托一个不具有实际意义的方法进行
+5. 绑定切入点与通知关系，指定通知添加到原始连接点的具体执行位置
+6. 定义通知类受Spring容器管理（@Component）。指定当前类为切面类（@Aspect）
+7. 开启Spring对AOP注解驱动支持（@EnableAspectJAutoProxy）
+``` 
+@Component
+@Aspect
+public class MyAdvice {
+    //定义切入点
+    @Pointcut("execution(void org.example.dao.BookDao.update())")
+    private void pt(){};
+    
+    //绑定切入点和通知的关系
+    @Before("pt()")
+    public void  method() {
+        System.out.println(System.currentTimeMillis());
+    }
+}
+```
+``` 
+@Configuration
+@ComponentScan("org.example")
+@EnableAspectJAutoProxy
+public class SpringConfig {
+}
+```
+#### AOP工作流程
+1. Spring容器启动
+2. 读取所有切面配置中的切入点
+3. 初始化bean，判定bean对应类中的方法是否匹配到任意切入点
+4. 匹配成功，创建原始对象（目标对象）的代理对象（Spring AOP本质：代理模式）
+5. 获取的bean为代理对象时。根据代理对象的运行模式运行原始方法与增强的内容，完成操作
+#### 切入点表达式
+1. 切入点：要进行增强的方法
+2. 切入点表达式：切入点的描述方式
+* 标准格式：
+``` 
+execution(void org.example.dao.BookDao.update())
+```
+* 可以使用通配符描述切入点（如：给所有业务层find方法加AOP）
+``` 
+execution(* org.example.*.*Service.find*(..))
+```
+#### AOP通知类型
+1. 前置通知 @Before()
+2. 后置通知 @After()
+3. 环绕通知 @Around()
+* 环绕通知必须依赖形参ProceedingJoinPoint才能实现对原始方法的调用，进而实现原始方法调用前后同时添加通知
+* 对原始方法的调用可以不接收返回值，通知方法设置成void即可，若要接收返回值，必须设定为Object类型
+* 由于无法预知原始方法是否会抛异常，因此环绕通知方法必须抛出Throwable对象
+``` 
+@Around("pt()")
+    public Object around(ProceedingJoinPoint pjp) throws Throwable {
+        System.out.println("around before advice...");
+        Object ret = pjp.proceed();  //对原始操作的调用
+        System.out.println("around after advice...");
+        return ret;
+    }
+```
+* 测量业务层接口执行效率时可以使用pjp.getSignature()获取执行签名信息
+4. 返回后通知 @AfterReturning
+5. 抛出异常后通知 @AfterThrowing
+#### AOP通知获取数据 
+1. 获取参数数据：JoinPoint对象可以获取到原始方法的调用参数，ProceedingJoinPoint是JoinPoint的子类
+``` 
+@Before("pt2()")
+    public void before2(JoinPoint jp) {
+        Object[] args = jp.getArgs();
+        System.out.println(Arrays.toString(args));
+    }
+```
+2. 获取返回值数据
+3. 获取异常数据
+***
+### Spring事务
+#### 事务简介
+1. 事务作用：在数据层保障一系列的数据库操作同成功同失败
+2. Spring事务作用：在数据层或业务层保障一系列的数据库操作同成功同失败
+#### 步骤
+1. 在业务层接口上添加Spring事务管理
+``` 
+public interface AccountService {
+
+    @Transactional
+    public void transfer(String out, String in, Double money);
+}
+```
+* 注解一般不会添加到业务层接口实现类中，降低耦合
+* 注解也可以添加到业务方法上，表示当前接口所有方法开启事务
+2. 设置事务管理器，MyBatis框架使用的是JDBC事务
+3. 开启注解式事务驱动
+#### Spring事务角色
+1. 事务管理员：事务发起方，在Spring中通常指代业务层开启事务的方法
+2. 事务协调员：事务加入方，在Spring中通常代指数据层方法，也可以是业务层方法
+#### 事务属性
+1. 事务相关配置
+* readonly：设置是否为只读事务
+* timeout：设置事务超时时间
+* rollbackFor：设置事务回滚异常（class），Spring有些事务不回滚，需要指定
+#### 事务传播行为
+1. 事务传播行为：事务协调员对事务处理员所携带事务的处理态度
+2. 在业务层接口添加Spring事务，设置事务的传播行为（REQUIRES_NEW：需要新事务）
+``` 
+@Transactional(propagation = Propagation.REQUIRES_NEW)
+```
+***
