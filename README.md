@@ -188,8 +188,8 @@ public class JdbcConfig {
 * 切入点（Pointcut）：匹配连接点的式子，在SpringAOP中，一个切入点只描述一个具体方法，也可以匹配多个方法。切入点一定是连接点。
 * 通知（Advice）：在切入点处执行的操作（共性功能），在SpringAOP中，功能最终以方法的形式呈现
 * 通知类：定义通知的类
-* 切面（Aspect）：描述通知和切入点的关系
-![SpringAOP](https://ts1.cn.mm.bing.net/th/id/R-C.0b7600322849a382903c34805bdc24eb?rik=9p3AKmTIhNLXTw&riu=http%3a%2f%2fwww.baeldung.com%2fwp-content%2fuploads%2f2017%2f11%2fProgram_Execution.jpg&ehk=vgtDB0jM0hdHH3y8YklKRHp1C2adT4E0Zkipm8y%2fbfQ%3d&risl=&pid=ImgRaw&r=0)
+* 切面（Aspect）：描述通知和切入点的关系  
+![SpringAOP](https://rumenz.com/java-topic/static-content/uploads/2015/01/spring-aop-diagram.jpg)
 #### 思路
 1. 导坐标
 2. 定义dao接口与实现类
@@ -300,3 +300,54 @@ public interface AccountService {
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 ```
 ***
+## SpringMVC
+### 简介
+SpringMVC是一种基于Java实现MVC模型的轻量级web框架，用于表现层开发 
+#### 步骤
+1. 使用SpringMVC需要先导入SpringMVC与Servlet坐标（导Servlet坐标时加上scope） 
+2. 创建SpringMVC控制器 
+3. 初始化SpringMVC环境，设定SpringMVC加载对应的bean 
+4. 初始化Servlet容器，加载SpringMVC环境，设置SpringMVC技术处理的请求
+### 请求与响应
+#### 请求
+1. 请求映射路径：@RequestMapping
+2. POST请求乱码处理：为web容器添加过滤器并指定字符集。Spring-web包提供了专用的字符过滤器
+``` 
+@Override                                                          
+protected Filter[] getServletFilters() {                           
+    CharacterEncodingFilter filter = new CharacterEncodingFilter();
+    filter.setEncoding("UTF-8");                                   
+    return new Filter[]{filter};                                   
+}                                                                  
+```
+#### 请求参数
+1. 普通参数
+* url地址传参，地址参数名与形参变量名相同。定义形参即可接收参数
+* 请求参数名与形参名不同，使用@RequestParam绑定参数关系
+2. POJO参数：请求参数名与形参对象属性名相同，定义POJO类型即可接受参数
+3. 嵌套POJO参数
+4. 数组参数：请求参数名与形参对应属性名相同
+5. 集合保存普通参数：请求参数名与形参集合对象名相同，@RequestParam绑定参数关系  
+注：json数据需要导坐标，并开启自动转换json数据的支持（@EnableWebMvc）,接受json数据时加上（@RequestBody）
+#### 日期类型参数传递
+1. 接收形参时，根据不同的日期格式设置不同的接收方式
+2. @DateTimeFormat注解设定时间型数据格式，属性pattern为时间日期格式字符串
+#### 响应
+1. 响应文本数据
+2. 响应json数据（对象转json）
+``` 
+@RequestMapping("/toJsonPOJO")
+    @ResponseBody
+    public User toJsonPOJO() {
+        System.out.println("返回json对象");
+        User user = new User();
+        user.setName("hello");
+        user.setAge(18);
+        return user;
+    }
+```  
+3. @ResponseBody：设置当前控制器返回值作为响应体
+#### RESTful快速开发
+REST：表现形式状态转换，按照REST风格访问资源时使用行为动作区分对资源进行了何种操作
+1. @RestController：设置当前控制器为RESTful风格，等同于@Controller与@ResponseBody两个注解组合功能
+2. @GetMapping、@PostMapping、@PutMapping、@DeleteMapping

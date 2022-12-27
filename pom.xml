@@ -10,7 +10,9 @@
     <module>spring-02-datasource-case</module>
     <module>spring-03-annotation-bean</module>
     <module>spring-04-AOP-demo</module>
-    <module>spring-05-AOP-case</module>
+    <module>springMVC-05-introduction-case</module>
+    <module>springMVC-06-request-response</module>
+      <module>springMVC-07-rest</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -47,5 +49,11 @@
       <version>2.0.6</version>
     </dependency>
 
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
