@@ -351,3 +351,4 @@ protected Filter[] getServletFilters() {
 REST：表现形式状态转换，按照REST风格访问资源时使用行为动作区分对资源进行了何种操作
 1. @RestController：设置当前控制器为RESTful风格，等同于@Controller与@ResponseBody两个注解组合功能
 2. @GetMapping、@PostMapping、@PutMapping、@DeleteMapping
+## SSM整合
