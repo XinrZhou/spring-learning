@@ -351,4 +351,33 @@ protected Filter[] getServletFilters() {
 REST：表现形式状态转换，按照REST风格访问资源时使用行为动作区分对资源进行了何种操作
 1. @RestController：设置当前控制器为RESTful风格，等同于@Controller与@ResponseBody两个注解组合功能
 2. @GetMapping、@PostMapping、@PutMapping、@DeleteMapping
-## SSM整合
+### 异常
+#### 出现异常的常见位置
+1. 框架内部抛异常
+2. 数据层抛异常：因外部服务器故障导致
+3. 业务层抛异常：因业务逻辑书写错误导致
+4. 表现层抛异常：因数据收集、校验规则导致（如：不匹配的数据类型间导致异常）
+5. 工具类抛异常：因工具类书写不严谨不够健壮导致（如：必要释放的连接长期未释放）
+#### 异常处理器
+1. 集中、统一处理项目中出现的异常
+2. 所有的异常均抛出到表现层处理
+``` 
+@RestControllerAdvice
+public class ProjectExceptionAdvice {
+
+    @ExceptionHandler(Exception.class)
+    public Result doException(Exception ex) {
+        return new Result();
+    }
+}
+```
+#### 项目异常分类
+1. 业务异常
+2. 系统异常：项目运行过程中可预计且无法避免的异常
+3. 其他异常：编程人员未预期到的异常
+#### 步骤
+1. 自定义项目系统级异常
+2. 自定义项目业务级异常
+3. 自定义异常编码
+4. 触发自定义异常
+5. 拦截并处理异常

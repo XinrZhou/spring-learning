@@ -8,8 +8,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@ComponentScan("com.example.service")
-@PropertySource("jdbc.properties")
+@ComponentScan("com.example")
+@PropertySource("classpath:jdbc.properties")
 @Import({JdbcConfig.class, MyBatisConfig.class})
 @EnableTransactionManagement
 public class SpringConfig {
