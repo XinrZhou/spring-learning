@@ -381,3 +381,30 @@ public class ProjectExceptionAdvice {
 3. 自定义异常编码
 4. 触发自定义异常
 5. 拦截并处理异常
+### 拦截器
+拦截器是一种动态拦截方法调用的机制，在springMVC中动态拦截控制器方法的执行
+#### 拦截器和过滤器的区别
+1. Filter属于Servlet技术，Interceptor属于SpringMVC技术
+2. Filter对所有访问进行增强，Interceptor针对SpringMVC的访问进行增强
+#### 步骤
+1. 声明拦截器的bean，并实现HandleInterceptor接口
+2. 定义配置类，继承WebMvcConfigurationSupport，实现addInterceptor方法（注意：扫描加载配置）
+3. 添加拦截器并设定拦截的访问路径
+``` 
+@Configuration
+public class SpringMvcSupport extends WebMvcConfigurationSupport {
+
+    @Autowired
+    private ProjectInterceptor projectInterceptor;
+
+    @Override
+    protected void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(projectInterceptor).addPathPatterns("/books","/books/*");
+    }
+} 
+```
+4. 注：可以使用标准接口WebMvcConfigurer简化开发，但侵入式较强
+#### 拦截器链
+1. 拦截器链的运行顺序以拦截器添加顺序为准
+2. 当拦截器中出现对原始处理器的拦截，后面的拦截器均终止运行
+3. 当拦截器运行中断，仅运行配置在前面的拦截器的afterCompletion操作

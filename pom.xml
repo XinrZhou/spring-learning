@@ -14,6 +14,7 @@
     <module>springMVC-06-request-response</module>
       <module>springMVC-07-rest</module>
     <module>springMVC-08-SSM</module>
+      <module>springMVC-09-interceptor</module>
   </modules>
   <packaging>pom</packaging>
 
