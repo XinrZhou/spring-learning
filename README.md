@@ -493,3 +493,22 @@ public class SpringMvcSupport extends WebMvcConfigurationSupport {
             System.in.read();
         }
     ```
+***
+### SpringSecurity
+#### 基本概念
+1. Spring家族中一个安全管理框架
+2. 认证：验证当前访问的用户是不是本系统中的用户。并确定是哪一个用户
+3. 鉴权：经过认证，判断当前登录用户是否有权限执行某个操作
+#### 源码分析
+1. SpringSecurity通过一些过滤器、拦截器实现登录鉴权流程
+2. 主要过滤器
+   * UsernamePasswordAuthenticactionFilter：处理用户名和密码是否正确
+   * ExceptionTranslationFilter：处理前面过滤器中抛出的异常
+   * FilterSecurityInterceptor：进行权限校验
+#### 思路
+1. 登录
+   * 自定义登录接口，调用providermanager auth方法，登陆成功，生成jwt存入redis 
+   * 自定义userdetailsmanager实现类，从数据库中获取系统用户
+2. 访问资源
+   * 自定义认证过滤器，获取token，从token中获取userId
+   * 从redis中通过userId获取用户信息，存SecurityContextHolder
