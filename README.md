@@ -501,10 +501,10 @@ public class SpringMvcSupport extends WebMvcConfigurationSupport {
 3. 鉴权：经过认证，判断当前登录用户是否有权限执行某个操作
 #### 源码分析
 1. SpringSecurity通过一些过滤器、拦截器实现登录鉴权流程
-2. 主要过滤器
-   * UsernamePasswordAuthenticactionFilter：处理用户名和密码是否正确
+2. 核心过滤器
+   * UsernamePasswordAuthenticactionFilter：处理用户名和密码是否正确的过滤器
    * ExceptionTranslationFilter：处理前面过滤器中抛出的异常
-   * FilterSecurityInterceptor：进行权限校验
+   * FilterSecurityInterceptor：进行权限校验的拦截器
 #### 思路
 1. 登录
    * 自定义登录接口，调用providermanager auth方法，登陆成功，生成jwt存入redis 
@@ -512,3 +512,94 @@ public class SpringMvcSupport extends WebMvcConfigurationSupport {
 2. 访问资源
    * 自定义认证过滤器，获取token，从token中获取userId
    * 从redis中通过userId获取用户信息，存SecurityContextHolder
+#### JWT
+1. JWT：JSON Web Token，由头部、载荷与签名三部分构成，无状态，不需要服务器端缓存session
+   * 头部(Header)：描述关于该JWT的最基本信息，如类型及其签名所用的算法等，如HMAC、SHA256、RSA，使用Base64编码组成
+   * 载荷(Payload)：存放有效信息，不放用户敏感的信息，如密码，同样使用Base64编码
+   * 签名(Signature)：需要使用编码后的header和payload加上我们提供的一个密钥，使用header中指定的签名算法(HS256)进行签名。签名的作用是保证JWT没有被篡改过
+2. 特点：可以被看到，但是不能篡改，因为第三部分用了密钥。JWT常用于设计用户认证、授权系统、web的单点登录
+``` 
+long l = System.currentTimeMillis();
+Date date = new Date(l+10000); //过期时间10s
+
+JwtBuilder jwtBuilder = Jwts.builder()
+       .setId("2023") //id
+       .setSubject("testJwt") //主题
+       .setIssuedAt(new Date()) //签发日期
+       .setExpiration(date) // 过期时间
+       .claim("userId",123)
+       .signWith(SignatureAlgorithm.HS256, "haha23haha");
+String jwt = jwtBuilder.compact();
+
+Claims haha = Jwts.parser().setSigningKey("haha23haha").parseClaimsJws(jwt).getBody(); //解析
+```
+#### 密码加密存储
+1. BCryptPasswordEncoder：自动加盐。只需把BCryptPasswordEncoder对象注入Spring容器中，SpringSecurity就会使用PasswordEncoder来进行密码校验
+2. 报错：java.lang.ClassNotFoundException: javax.xml.bind.DatatypeConverter
+   * 原因：jdk版本太高，javax.xml.bind在jdk8中有，但是在更高版本没有
+   * 解决：在maven中添加依赖
+   ``` 
+     <dependency>
+         <groupId>javax.xml.bind</groupId>
+         <artifactId>jaxb-api</artifactId>
+     </dependency> 
+   ```
+#### 认证过滤器
+1. 获取token 
+2. 解析token 
+3. 获取userid 
+4. 封装Authentication 
+5. 存入SecurityContextHolder
+#### 授权
+1. 在SpringSecurity中，会使用默认的FilterSecurityInterceptor来进行权限校验
+2. 在FilterSecurityInterceptor中会从SecurityContextHolder获取其中的Authentication，然后获取其中的权限信息
+3. 步骤
+   * UserDetailServiceImpl的loadUserByUsername 查询权限信息
+   * JwtAuthenticationTokenFilter中放入权限信息
+4. 实现：SpringSecurity为提供了基于注解的权限控制方案
+   * 配置类中开启相关配置
+   ``` 
+    @EnableGlobalMethodSecurity(prePostEnabled = true)
+   ```
+   * 使用对应的注解：@PreAuthorize
+   ``` 
+    @GetMapping("/hello")
+       @PreAuthorize("hasAnyAuthority('hello')")
+       public String hello() {
+           return "hello";
+       } 
+   ```
+#### 自定义失败处理
+1. ExceptionTranslationFilter捕获异常，判断是认证失败或授权失败
+   * 认证失败：封装AuthenticationException，然后调用AuthenticationEntryPoint的commence方法处理
+   * 授权失败：封装AccessDeniedException，然后调用AccessDeniedHandler的handle方法处理
+2. 思路：自定义这两个类的异常处理机制的实现类，配置到SpringSecurity
+   * 自定义实现类
+   ``` 
+   @Component
+   public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
+       @Override
+       public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+           //给前端ResponseResult 的json
+           ResponseResult responseResult = new ResponseResult(HttpStatus.UNAUTHORIZED.value(), "登陆认证失败了，请重新登陆！");
+           String json = JSON.toJSONString(responseResult);
+           WebUtils.renderString(response,json);
+       }
+   } 
+   ```
+   ``` 
+   @Component
+   public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
+       @Override
+       public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+           //给前端ResponseResult 的json
+           ResponseResult responseResult = new ResponseResult(HttpStatus.FORBIDDEN.value(), "您权限不足！");
+           String json = JSON.toJSONString(responseResult);
+           WebUtils.renderString(response,json);
+       }
+   } 
+   ```
+   * 配置给SpringSecurity：先注入对应的处理器，再使用HttpSecurity对象的方法去配置
+#### 跨域
+1. 跨域：浏览器的同源策略(相同的协议、主机、端口号)，导致不能向其他域名发送异步请求
+2. CORS解决跨域：controller加上@CrossOrigin注解
