@@ -186,7 +186,7 @@ public class JdbcConfig {
 2. Spring理念：无入侵式编程
 3. 核心概念
    * 连接点（JoinPoint）：程序执行过程中的任意位置，在SpringAOP中理解为方法的执行
-   * 切入点（Pointcut）：匹配连接点的式子，在SpringAOP中，一个切入点只描述一个具体方法，也可以匹配多个方法。切入点一定是连接点。
+   * 切入点（Pointcut）：匹配连接点的式子，在SpringAOP中，一个切入点只描述一个具体方法，也可以匹配多个方法。切入点一定是连接点
    * 通知（Advice）：在切入点处执行的操作（共性功能），在SpringAOP中，功能最终以方法的形式呈现
    * 通知类：定义通知的类
    * 切面（Aspect）：描述通知和切入点的关系  
@@ -430,7 +430,7 @@ public class SpringMvcSupport extends WebMvcConfigurationSupport {
    * 错误信号和完成信号都代表终止信号，用于告诉订阅者数据流结束了
    * 错误信号终止数据流同时把错误信息传递给订阅者
    * 错误信号和完成信号不能共存
-   * 若未发送任何元素值，二十直接发送错误信号或完成信号，表示空数据流
+   * 若未发送任何元素值，而是直接发送错误信号或完成信号，表示空数据流
    * 若无错误信号或完成信号，表示是无限数据流
 6. 调用just或其他方法只是声明数据流，只有订阅之后才能触发数据流
 ``` 
@@ -494,17 +494,16 @@ public class SpringMvcSupport extends WebMvcConfigurationSupport {
         }
     ```
 ***
-### SpringSecurity
+### Spring Security
 #### 基本概念
 1. Spring家族中一个安全管理框架
 2. 认证：验证当前访问的用户是不是本系统中的用户。并确定是哪一个用户
-3. 鉴权：经过认证，判断当前登录用户是否有权限执行某个操作
-#### 源码分析
-1. SpringSecurity通过一些过滤器、拦截器实现登录鉴权流程
-2. 核心过滤器
+3. 鉴权：经过认证，判断当前登录用户是否有权限执行某个操作 
+4. SpringSecurity通过一些过滤器、拦截器实现登录鉴权流程
    * UsernamePasswordAuthenticactionFilter：处理用户名和密码是否正确的过滤器
    * ExceptionTranslationFilter：处理前面过滤器中抛出的异常
    * FilterSecurityInterceptor：进行权限校验的拦截器
+5. 单点登录：在一个多应用系统中，在其中一个系统上登录之后，不需要在其它系统上登录也可以访问其内容
 #### 思路
 1. 登录
    * 自定义登录接口，调用providermanager auth方法，登陆成功，生成jwt存入redis 
@@ -603,3 +602,56 @@ Claims haha = Jwts.parser().setSigningKey("haha23haha").parseClaimsJws(jwt).getB
 #### 跨域
 1. 跨域：浏览器的同源策略(相同的协议、主机、端口号)，导致不能向其他域名发送异步请求
 2. CORS解决跨域：controller加上@CrossOrigin注解
+*** 
+### Spring Data Jpa
+#### 简介
+1. Spring Data：提供了一套统一的数据访问API
+2. Spring Dta Jpa：Spring Data对JPA封装之后的产物，目的在于简化JPA的数据访问技术
+#### pojo类
+1. 主键生成策略
+   ``` 
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY) //主键生成策略
+   ```
+  * TABLE：使用一个特定的数据库表来保存主键 
+  * SEQUENCE：使用特定的序列来生成主键 
+  * IDENTITY：由数据库生成（主要用于自增主键） 
+  * AUTO：由程序控制主键生成
+2. @Column：设置实体类属性与数据表字段对应，若二者相同，可省略
+3. JPA中保存和修改都用save，若id存在，则是修改。save方法修改时是全字段修改
+#### 方法命名规则查询
+1. Spring Data提供了一套方法命名规范，只要按照这个规范去定义方法名称，就能创建查询。Spring Data Jpa在执行时会解析方法名，自动生成查询语句进行查询
+2. 命名规则：以findBy开头，涉及条件查询时，将对应的属性用关键字连接，属性首字母大写
+``` 
+List<Article> findByTitle(String title); 
+List<Article> findByTitleContains(String title);
+List<Article> findByTitleAndContentContains(String title, String content);
+List<Article> findByIdBetween(Integer startId, Integer endId);
+Page<Article> findByIdBetween(Integer startId, Integer endId, Pageable pageable);
+```
+#### JPQL查询
+1. JPQL(Java Persistence Query Language)：JPA中定义的查询语言，类似于sql，但JPQL将表名和列名换成实体类的类名和属性名
+2. 复杂的操作，可以使用@Query注解，结合JPQL完成查询
+3. 使用 ?index 占位符，用来取出指定索引的参数，索引从1开始
+4. 使用 :参数名称，结合@Param注解就可以为参数命名
+``` 
+    @Query("from Article ")
+    List<Article> selectAll();
+
+    @Query("from Article where id > ?1 and title like %?2%")
+    List<Article> selectByCondition(Integer id, String title);
+
+    @Query("from Article where id > :id and title like %:title%")
+    List<Article> selectByCondition2(@Param("id") Integer id, @Param("title") String title); 
+    
+    @Query("from Article where id > ?#{[0].id} and title like %?#{[0].title}%")
+    List<Article> selectByEntity(Article article);
+    
+    @Query("from Article where id > :#{#article.id} and title like %:#{#article.title}%")
+    List<Article> selectByEntity2(Article article);
+```
+#### 本地SQL查询
+``` 
+@Query(value = "select * from article where id :#{#article.id}", nativeQuery = true)
+List<Article> selectByNativeSql(Article article);
+```
