@@ -504,13 +504,6 @@ public class SpringMvcSupport extends WebMvcConfigurationSupport {
    * ExceptionTranslationFilter：处理前面过滤器中抛出的异常
    * FilterSecurityInterceptor：进行权限校验的拦截器
 5. 单点登录：在一个多应用系统中，在其中一个系统上登录之后，不需要在其它系统上登录也可以访问其内容
-#### 思路
-1. 登录
-   * 自定义登录接口，调用providermanager auth方法，登陆成功，生成jwt存入redis 
-   * 自定义userdetailsmanager实现类，从数据库中获取系统用户
-2. 访问资源
-   * 自定义认证过滤器，获取token，从token中获取userId
-   * 从redis中通过userId获取用户信息，存SecurityContextHolder
 #### JWT
 1. JWT：JSON Web Token，由头部、载荷与签名三部分构成，无状态，不需要服务器端缓存session
    * 头部(Header)：描述关于该JWT的最基本信息，如类型及其签名所用的算法等，如HMAC、SHA256、RSA，使用Base64编码组成
