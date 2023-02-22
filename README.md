@@ -1,58 +1,58 @@
-## Spring
+# Spring
 ![spring](https://www.waytoeasylearn.com/wp-content/uploads/2020/01/4-2-768x400.png)
 - [Spring](#spring)
-  - [核心概念](#核心概念)
-    - [IoC (Inversion of control)：控制反转](#ioc-inversion-of-control控制反转)
-    - [DI (Dependency Injection)：依赖注入](#di-dependency-injection依赖注入)
-  - [IoC案例分析](#ioc案例分析)
-  - [DI案例分析](#di案例分析)
-  - [bean](#bean)
-    - [相关配置](#相关配置)
-    - [实例化bean的三种方式](#实例化bean的三种方式)
-    - [bean生命周期](#bean生命周期)
-  - [依赖注入](#依赖注入)
-    - [依赖注入方式](#依赖注入方式)
-    - [依赖自动装配](#依赖自动装配)
-  - [数据源配置](#数据源配置)
-    - [加载properties文件](#加载properties文件)
-  - [容器](#容器)
-    - [容器初始化](#容器初始化)
-    - [获取bean](#获取bean)
-  - [注解开发](#注解开发)
-    - [定义bean](#定义bean)
-    - [依赖注入](#依赖注入-1)
-    - [第三方bean管理](#第三方bean管理)
-  - [AOP](#aop)
-    - [简介](#简介)
-    - [思路](#思路)
-    - [AOP工作流程](#aop工作流程)
-    - [切入点表达式](#切入点表达式)
-    - [AOP通知类型](#aop通知类型)
-    - [AOP通知获取数据](#aop通知获取数据)
-  - [Spring事务](#spring事务)
-    - [事务简介](#事务简介)
-    - [步骤](#步骤)
-    - [Spring事务角色](#spring事务角色)
-    - [事务属性](#事务属性)
-    - [事务传播行为](#事务传播行为)
-- [SpringMVC](#springmvc)
-  - [简介](#简介-1)
-    - [步骤](#步骤-1)
-  - [请求与响应](#请求与响应)
-    - [请求](#请求)
-    - [请求参数](#请求参数)
-    - [日期类型参数传递](#日期类型参数传递)
-    - [响应](#响应)
-    - [RESTful快速开发](#restful快速开发)
-  - [异常](#异常)
-    - [出现异常的常见位置](#出现异常的常见位置)
-    - [异常处理器](#异常处理器)
-    - [项目异常分类](#项目异常分类)
-    - [步骤](#步骤-2)
-  - [拦截器](#拦截器)
-    - [拦截器和过滤器的区别](#拦截器和过滤器的区别)
-    - [步骤](#步骤-3)
-    - [拦截器链](#拦截器链)
+    - [核心概念](#核心概念)
+      - [IoC (Inversion of control)：控制反转](#ioc-inversion-of-control控制反转)
+      - [DI (Dependency Injection)：依赖注入](#di-dependency-injection依赖注入)
+    - [IoC案例分析](#ioc案例分析)
+    - [DI案例分析](#di案例分析)
+    - [bean](#bean)
+      - [相关配置](#相关配置)
+      - [实例化bean的三种方式](#实例化bean的三种方式)
+      - [bean生命周期](#bean生命周期)
+    - [依赖注入](#依赖注入)
+      - [依赖注入方式](#依赖注入方式)
+      - [依赖自动装配](#依赖自动装配)
+    - [数据源配置](#数据源配置)
+      - [加载properties文件](#加载properties文件)
+    - [容器](#容器)
+      - [容器初始化](#容器初始化)
+      - [获取bean](#获取bean)
+    - [注解开发](#注解开发)
+      - [定义bean](#定义bean)
+      - [依赖注入](#依赖注入-1)
+      - [第三方bean管理](#第三方bean管理)
+    - [AOP](#aop)
+      - [简介](#简介)
+      - [思路](#思路)
+      - [AOP工作流程](#aop工作流程)
+      - [切入点表达式](#切入点表达式)
+      - [AOP通知类型](#aop通知类型)
+      - [AOP通知获取数据](#aop通知获取数据)
+    - [Spring事务](#spring事务)
+      - [事务简介](#事务简介)
+      - [步骤](#步骤)
+      - [Spring事务角色](#spring事务角色)
+      - [事务属性](#事务属性)
+      - [事务传播行为](#事务传播行为)
+  - [SpringMVC](#springmvc)
+    - [简介](#简介-1)
+      - [步骤](#步骤-1)
+    - [请求与响应](#请求与响应)
+      - [请求](#请求)
+      - [请求参数](#请求参数)
+      - [日期类型参数传递](#日期类型参数传递)
+      - [响应](#响应)
+      - [RESTful快速开发](#restful快速开发)
+    - [异常](#异常)
+      - [出现异常的常见位置](#出现异常的常见位置)
+      - [异常处理器](#异常处理器)
+      - [项目异常分类](#项目异常分类)
+      - [步骤](#步骤-2)
+    - [拦截器](#拦截器)
+      - [拦截器和过滤器的区别](#拦截器和过滤器的区别)
+      - [步骤](#步骤-3)
+      - [拦截器链](#拦截器链)
   - [Spring新功能 —— Webflux](#spring新功能--webflux)
     - [基本介绍](#基本介绍)
     - [响应式编程](#响应式编程)
@@ -483,8 +483,8 @@ public class SpringMvcSupport extends WebMvcConfigurationSupport {
 2. 当拦截器中出现对原始处理器的拦截，后面的拦截器均终止运行
 3. 当拦截器运行中断，仅运行配置在前面的拦截器的afterCompletion操作
 *** 
-### Spring新功能 —— Webflux
-#### 基本介绍
+## Spring新功能 —— Webflux
+### 基本介绍
 1. Spring5添加的新模块，功能与springMVC类似。但Webflux是使用响应式编程出现的框架
 2. 传统的web框架，如SpringMVC，基于Servlet容器，而Webflux是一种异步非阻塞的框架。异步非阻塞的框架在Servlet3.1之后才支持，核心是基于Reactor的相关API实现的
 3. Webflux特点
@@ -492,7 +492,7 @@ public class SpringMvcSupport extends WebMvcConfigurationSupport {
    * 函数式编程：Webflux使用Java8函数式编程方式实现路由请求
 4. SpringMVC和Webflux
 ![SpringMVC和Webflux](https://img-blog.csdnimg.cn/20190103151431670.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L21pYW95aWJvMTI=,size_16,color_FFFFFF,t_70)
-#### 响应式编程
+### 响应式编程
 1. 面向数据流和变化传播的编程范式
 2. 响应式编程操作中，Reactor是满足Reactive的规范框架
 3. Reactor有两个核心类：Mono和Flux，这两个类均实现了Publisher接口，提供丰富操作符
@@ -514,16 +514,16 @@ public class SpringMvcSupport extends WebMvcConfigurationSupport {
    * map：元素映射为新元素
    * flatMap：元素映射为流，先把每个元素转成流，再把转换之后的流合并    
    ![操作符](https://ts1.cn.mm.bing.net/th/id/R-C.f4a3d8d76c8383a2afd30e43ede5b685?rik=Tn%2fWSPSaVfM4bA&riu=http%3a%2f%2fimages.zhuxingsheng.com%2f20220924235040_1664034640.jpg&ehk=8sepjKfAxkoV6Kx2dZ%2fAYdsYLqW8ob%2bEf%2fbyX6Wky8g%3d&risl=&pid=ImgRaw&r=0)
-#### Webflux执行流程和核心API
+### Webflux执行流程和核心API
 1. SpringWebflux基于Reactor，默认容器是Netty(高性能NIO框架)
 2. 执行过程：SpringWebflux核心控制器DispatchHandler，实现接口WebHandler，负责请求处理
    * HandlerMapping：请求查询到处理的方法
    * HandlerAdaptor：真正负责请求处理
    * HandlerResultHandler：响应结果处理
-#### Webflux注解编程模型
+### Webflux注解编程模型
 1. SpringMVC方式实现：SpringMVC+Servlet+Tomcat
 2. SpringWebflux方式实现：SpringWebflux+Reactor+Netty
-#### Webflux函数式编程模型
+### Webflux函数式编程模型
 1. 使用函数式编程模型操作时，需要自己初始化服务器
 2. 两个核心接口：RouterFunction(实现路由功能)和HandlerFunction(处理请求生成响应的函数)
 3. 核心任务：定义两个函数接口的实现并启动需要的服务器
@@ -567,8 +567,8 @@ public class SpringMvcSupport extends WebMvcConfigurationSupport {
         }
     ```
 ***
-### Spring Security
-#### 基本概念
+## Spring Security
+### 基本概念
 1. Spring家族中一个安全管理框架
 2. 认证：验证当前访问的用户是不是本系统中的用户。并确定是哪一个用户
 3. 鉴权：经过认证，判断当前登录用户是否有权限执行某个操作 
@@ -577,7 +577,7 @@ public class SpringMvcSupport extends WebMvcConfigurationSupport {
    * ExceptionTranslationFilter：处理前面过滤器中抛出的异常
    * FilterSecurityInterceptor：进行权限校验的拦截器
 5. 单点登录：在一个多应用系统中，在其中一个系统上登录之后，不需要在其它系统上登录也可以访问其内容
-#### JWT
+### JWT
 1. JWT：JSON Web Token，由头部、载荷与签名三部分构成，无状态，不需要服务器端缓存session
    * 头部(Header)：描述关于该JWT的最基本信息，如类型及其签名所用的算法等，如HMAC、SHA256、RSA，使用Base64编码组成
    * 载荷(Payload)：存放有效信息，不放用户敏感的信息，如密码，同样使用Base64编码
@@ -598,7 +598,7 @@ String jwt = jwtBuilder.compact();
 
 Claims haha = Jwts.parser().setSigningKey("haha23haha").parseClaimsJws(jwt).getBody(); //解析
 ```
-#### 密码加密存储
+### 密码加密存储
 1. BCryptPasswordEncoder：自动加盐。只需把BCryptPasswordEncoder对象注入Spring容器中，SpringSecurity就会使用PasswordEncoder来进行密码校验
 2. 报错：java.lang.ClassNotFoundException: javax.xml.bind.DatatypeConverter
    * 原因：jdk版本太高，javax.xml.bind在jdk8中有，但是在更高版本没有
@@ -609,13 +609,13 @@ Claims haha = Jwts.parser().setSigningKey("haha23haha").parseClaimsJws(jwt).getB
          <artifactId>jaxb-api</artifactId>
      </dependency> 
    ```
-#### 认证过滤器
+### 认证过滤器
 1. 获取token 
 2. 解析token 
 3. 获取userid 
 4. 封装Authentication 
 5. 存入SecurityContextHolder
-#### 授权
+### 授权
 1. 在SpringSecurity中，会使用默认的FilterSecurityInterceptor来进行权限校验
 2. 在FilterSecurityInterceptor中会从SecurityContextHolder获取其中的Authentication，然后获取其中的权限信息
 3. 步骤
@@ -634,7 +634,7 @@ Claims haha = Jwts.parser().setSigningKey("haha23haha").parseClaimsJws(jwt).getB
            return "hello";
        } 
    ```
-#### 自定义失败处理
+### 自定义失败处理
 1. ExceptionTranslationFilter捕获异常，判断是认证失败或授权失败
    * 认证失败：封装AuthenticationException，然后调用AuthenticationEntryPoint的commence方法处理
    * 授权失败：封装AccessDeniedException，然后调用AccessDeniedHandler的handle方法处理
@@ -665,15 +665,15 @@ Claims haha = Jwts.parser().setSigningKey("haha23haha").parseClaimsJws(jwt).getB
    } 
    ```
    * 配置给SpringSecurity：先注入对应的处理器，再使用HttpSecurity对象的方法去配置
-#### 跨域
+### 跨域
 1. 跨域：浏览器的同源策略(相同的协议、主机、端口号)，导致不能向其他域名发送异步请求
 2. CORS解决跨域：controller加上@CrossOrigin注解
 *** 
-### Spring Data Jpa
-#### 简介
+## Spring Data Jpa
+### 简介
 1. Spring Data：提供了一套统一的数据访问API
 2. Spring Dta Jpa：Spring Data对JPA封装之后的产物，目的在于简化JPA的数据访问技术
-#### pojo类
+### pojo类
 1. 主键生成策略
    ``` 
    @Id
@@ -685,7 +685,7 @@ Claims haha = Jwts.parser().setSigningKey("haha23haha").parseClaimsJws(jwt).getB
   * AUTO：由程序控制主键生成
 2. @Column：设置实体类属性与数据表字段对应，若二者相同，可省略
 3. JPA中保存和修改都用save，若id存在，则是修改。save方法修改时是全字段修改
-#### 方法命名规则查询
+### 方法命名规则查询
 1. Spring Data提供了一套方法命名规范，只要按照这个规范去定义方法名称，就能创建查询。Spring Data Jpa在执行时会解析方法名，自动生成查询语句进行查询
 2. 命名规则：以findBy开头，涉及条件查询时，将对应的属性用关键字连接，属性首字母大写
 ``` 
@@ -695,7 +695,7 @@ List<Article> findByTitleAndContentContains(String title, String content);
 List<Article> findByIdBetween(Integer startId, Integer endId);
 Page<Article> findByIdBetween(Integer startId, Integer endId, Pageable pageable);
 ```
-#### JPQL查询
+### JPQL查询
 1. JPQL(Java Persistence Query Language)：JPA中定义的查询语言，类似于sql，但JPQL将表名和列名换成实体类的类名和属性名
 2. 复杂的操作，可以使用@Query注解，结合JPQL完成查询
 3. 使用 ?index 占位符，用来取出指定索引的参数，索引从1开始
@@ -716,7 +716,7 @@ Page<Article> findByIdBetween(Integer startId, Integer endId, Pageable pageable)
     @Query("from Article where id > :#{#article.id} and title like %:#{#article.title}%")
     List<Article> selectByEntity2(Article article);
 ```
-#### 本地SQL查询
+### 本地SQL查询
 ``` 
 @Query(value = "select * from article where id :#{#article.id}", nativeQuery = true)
 List<Article> selectByNativeSql(Article article);
